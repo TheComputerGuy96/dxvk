@@ -6646,18 +6646,18 @@ namespace dxvk {
       info.addressModeW   = DecodeAddressMode(cKey.AddressW);
       info.compareToDepth = cKey.Depth;
       info.compareOp      = cKey.Depth ? VK_COMPARE_OP_LESS_OR_EQUAL : VK_COMPARE_OP_NEVER;
-      info.magFilter      = DecodeFilter(cKey.MagFilter);
-      info.minFilter      = DecodeFilter(cKey.MinFilter);
+      info.magFilter      = VK_FILTER_NEAREST;
+      info.minFilter      = VK_FILTER_NEAREST;
       info.mipmapMode     = mipFilter.MipFilter;
-      info.maxAnisotropy  = float(cKey.MaxAnisotropy);
-      info.useAnisotropy  = cKey.MaxAnisotropy > 1;
+      info.maxAnisotropy  = 1.0f;
+      info.useAnisotropy  = false;
 
       info.mipmapLodBias  = cKey.MipmapLodBias + m_d3d9Options.samplerLodBias;
       if (m_d3d9Options.clampNegativeLodBias)
         info.mipmapLodBias = std::max(info.mipmapLodBias, 0.0f);
 
-      info.mipmapLodMin   = mipFilter.MipsEnabled ? float(cKey.MaxMipLevel) : 0;
-      info.mipmapLodMax   = mipFilter.MipsEnabled ? FLT_MAX                 : 0;
+      info.mipmapLodMin   = 4;
+      info.mipmapLodMax   = std::max(info.mipmapLodMin, FLT_MAX);
       info.reductionMode  = VK_SAMPLER_REDUCTION_MODE_WEIGHTED_AVERAGE;
       info.usePixelCoord  = VK_FALSE;
       info.nonSeamless    = m_dxvkDevice->features().extNonSeamlessCubeMap.nonSeamlessCubeMap && !m_d3d9Options.seamlessCubes;
